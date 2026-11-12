@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia de Amor - Tarjeta Digital</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        /* Variables dinámicas para los 3 Temas Pasteles */
+        :root, [data-theme="rosa"] {
+            --bg-grad-1: #fff5f7;
+            --bg-grad-2: #ffe4e8;
+            --bg-grad-3: #ffedd5;
+            --primary: #d65a7a;
+            --primary-dark: #9d3350;
+            --secondary: #f4978e;
+            --accent-soft: #fbcfe8;
+            --card-bg: rgba(255, 255, 255, 0.82);
+            --card-border: rgba(244, 151, 142, 0.45);
+            --text-main: #4a2531;
+            --text-muted: #8c5a68;
+            --dark-panel: #6b273c;
+            --font-title: 'Great Vibes', cursive;
+            --font-hand: 'Dancing Script', cursive;
+        }
+
+        [data-theme="lavanda"] {
+            --bg-grad-1: #f8f5ff;
+            --bg-grad-2: #ede4ff;
+            --bg-grad-3: #fce7f3;
+            --primary: #8b5cf6;
+            --primary-dark: #5b21b6;
+            --secondary: #c084fc;
+            --accent-soft: #e9d5ff;
+            --card-bg: rgba(255, 255, 255, 0.84);
+            --card-border: rgba(192, 132, 252, 0.45);
+            --text-main: #311d52;
+            --text-muted: #6e5694;
+            --dark-panel: #45247a;
+            --font-title: 'Playfair Display', serif;
+            --font-hand: 'Dancing Script', cursive;
+        }
+
+        [data-theme="menta"] {
+            --bg-grad-1: #f2fbf8;
+            --bg-grad-2: #dcfce7;
+            --bg-grad-3: #e0f2fe;
+            --primary: #2a9d8f;
+            --primary-dark: #1d6b61;
+            --secondary: #64b5f6;
+            --accent-soft: #bae6fd;
+            --card-bg: rgba(255, 255, 255, 0.84);
+            --card-border: rgba(100, 181, 246, 0.45);
+            --text-main: #183d38;
+            --text-muted: #4b756f;
+            --dark-panel: #1f544d;
+            --font-title: 'Great Vibes', cursive;
+            --font-hand: 'Dancing Script', cursive;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 50%, var(--bg-grad-3) 100%);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            transition: background 0.6s ease, color 0.4s ease;
+        }
+
+        .theme-title { font-family: var(--font-title); color: var(--primary-dark); }
+        .theme-hand { font-family: var(--font-hand); }
+        .theme-primary-text { color: var(--primary); }
+        .theme-primary-dark-text { color: var(--primary-dark); }
+        .theme-muted-text { color: var(--text-muted); }
+        .theme-bg-primary { background-color: var(--primary); }
+        .theme-bg-dark { background-color: var(--dark-panel); }
+        .theme-border { border-color: var(--card-border); }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+        }
+
+        /* Partículas flotantes */
+        .heart-particle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0;
+            animation: floatUp linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.4) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.75; }
+            85% { opacity: 0.75; }
+            100% { transform: translateY(-10vh) scale(1.15) rotate(360deg); opacity: 0; }
+        }
+
+        /* Explosión interactiva al hacer clic/tocar */
+        .click-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 60;
+            animation: burstHeart 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes burstHeart {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--rot)); opacity: 0; }
+        }
+
+        /* Animaciones del Carrusel (3 Estilos) */
+        .slide-item {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .slide-item.active {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* 1. Desvanecimiento suave (Fade) */
+        .anim-fade .slide-item { transform: scale(1); }
+
+        /* 2. Deslizamiento 3D / Tarjeta (Slide/Flip) */
+        .anim-slide3d { perspective: 1200px; }
+        .anim-slide3d .slide-item { transform: translateX(60%) rotateY(-25deg) scale(0.88); }
+        .anim-slide3d .slide-item.prev { transform: translateX(-60%) rotateY(25deg) scale(0.88); }
+        .anim-slide3d .slide-item.active { transform: translateX(0) rotateY(0deg) scale(1); }
+
+        /* 3. Zoom Romántico (Ken Burns) */
+        .anim-zoom .slide-item img { transform: scale(1); transition: transform 6s ease-out; }
+        .anim-zoom .slide-item.active img { transform: scale(1.12); }
+
+        /* Sobre Interactivo Inicial */
+        .envelope-flap {
+            transform-origin: top;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .envelope-open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+        .envelope-letter {
+            transition: transform 0.7s ease 0.2s;
+        }
+        .envelope-open .envelope-letter {
+            transform: translateY(-45px);
+        }
+
+        /* Modo Regalo: oculta controles de edición */
+        body.gift-mode .edit-only {
+            display: none !important;
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow { animation: spinSlow 8s linear infinite; }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+    </style>
+</head>
+<body data-theme="rosa" class="min-h-screen relative overflow-x-hidden select-none sm:select-auto">
+
+    <!-- Contenedor de Corazones Flotantes -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- PANTALLA DE BIENVENIDA / SOBRE INTERACTIVO -->
+    <div id="envelope-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 transition-opacity duration-700" style="background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2));">
+        <div class="text-center mb-6 animate-bounce">
+            <span class="px-4 py-1.5 rounded-full bg-white/80 text-xs font-semibold tracking-widest uppercase shadow-sm theme-primary-dark-text">
+                Tienes una sorpresa especial 💌
+            </span>
+        </div>
+
+        <!-- Sobre Animado -->
+        <div id="envelope-box" onclick="openSurprise()" class="relative w-72 sm:w-80 h-48 sm:h-52 bg-white rounded-2xl shadow-2xl border-2 theme-border cursor-pointer flex items-center justify-center group hover:scale-105 transition-transform duration-300">
+            <!-- Carta interior -->
+            <div class="envelope-letter absolute inset-x-4 top-3 bottom-3 bg-rose-50 rounded-xl border border-rose-200 flex flex-col items-center justify-center p-3 text-center shadow-inner">
+                <p class="theme-hand text-2xl theme-primary-dark-text font-bold" id="envelope-names">Para Ti</p>
+                <p class="text-[11px] theme-muted-text mt-1">Con todo mi cariño</p>
+            </div>
+            <!-- Solapa inferior decorativa -->
+            <div class="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+                <div class="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-white via-white/95 to-transparent"></div>
+            </div>
+            <!-- Solapa superior -->
+            <div class="envelope-flap absolute top-0 inset-x-0 h-28 bg-white/95 border-b theme-border rounded-t-2xl shadow-sm z-10 flex items-end justify-center pb-2"></div>
+            <!-- Sello de Corazón -->
+            <div class="relative z-20 w-14 h-14 rounded-full theme-bg-primary text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <i class="fas fa-heart text-2xl animate-pulse"></i>
+            </div>
+        </div>
+
+        <button onclick="openSurprise()" class="mt-8 px-7 py-3 rounded-full theme-bg-primary text-white font-semibold text-sm shadow-lg hover:opacity-95 active:scale-95 transition flex items-center gap-2 cursor-pointer">
+            <i class="fas fa-envelope-open-text"></i> Abrir Sorpresa
+        </button>
+    </div>
+
+    <!-- BARRA SUPERIOR FLOTANTE (Temas, Modo Regalo y Música) -->
+    <header class="sticky top-0 z-40 px-3 py-2.5 backdrop-blur-md bg-white/40 border-b theme-border">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <!-- Selector Rápido de 3 Temas Pasteles -->
+            <div class="flex items-center gap-1.5 bg-white/80 px-2.5 py-1.5 rounded-full shadow-sm border theme-border edit-only" title="Cambiar tema pastel">
+                <span class="text-[11px] font-semibold theme-muted-text hidden sm:inline mr-1">Tema:</span>
+                <button onclick="setTheme('rosa')" class="w-5 h-5 rounded-full bg-[#f4978e] border-2 border-white shadow hover:scale-110 transition cursor-pointer" title="Rosa Algodón & Crema"></button>
+                <button onclick="setTheme('lavanda')" class="w-5 h-5 rounded-full bg-[#c084fc] border-2 border-white shadow hover:scale-110 transition cursor-pointer" title="Lavanda Soñadora"></button>
+                <button onclick="setTheme('menta')" class="w-5 h-5 rounded-full bg-[#2a9d8f] border-2 border-white shadow hover:scale-110 transition cursor-pointer" title="Menta & Cielo Dulce"></button>
+            </div>
+
+            <!-- Botones de Acción Derecha -->
+            <div class="flex items-center gap-2 ml-auto">
+                <!-- Botón Modo Regalo / Vista Previa -->
+                <button id="gift-mode-btn" onclick="toggleGiftMode()" class="bg-white/85 hover:bg-white px-3 py-1.5 rounded-full shadow-sm border theme-border text-xs font-semibold theme-primary-dark-text flex items-center gap-1.5 transition cursor-pointer">
+                    <i id="gift-mode-icon" class="fas fa-gift theme-primary-text"></i>
+                    <span id="gift-mode-text">Vista Previa Regalo</span>
+                </button>
+
+                <!-- Reproductor de Música Compacto -->
+                <div id="music-pill" class="bg-white/90 px-3 py-1.5 rounded-full shadow-sm border theme-border flex items-center gap-2">
+                    <button onclick="toggleMusicPlay()" id="music-play-btn" class="w-7 h-7 rounded-full theme-bg-primary text-white flex items-center justify-center text-xs shadow cursor-pointer">
+                        <i id="music-play-icon" class="fas fa-play"></i>
+                    </button>
+                    <div class="flex flex-col max-w-[110px] sm:max-w-[150px]">
+                        <span id="music-status-label" class="text-[11px] font-semibold truncate theme-primary-dark-text">Música Romántica</span>
+                        <input type="range" id="music-progress" min="0" max="100" value="0" oninput="seekAudio(this.value)" class="w-full h-1 accent-pink-500 cursor-pointer">
+                    </div>
+                    <button onclick="toggleMute()" class="text-xs theme-muted-text hover:opacity-75 px-1 cursor-pointer" title="Silenciar/Activar sonido">
+                        <i id="volume-icon" class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Reproductores Ocultos/Mini (Audio Local y YouTube) -->
+    <audio id="local-audio-player" loop preload="auto"></audio>
+    <div id="youtube-mini-container" class="fixed bottom-4 right-4 z-40 hidden glass-card p-2 rounded-2xl shadow-xl">
+        <div class="flex items-center justify-between mb-1 px-1">
+            <span class="text-[10px] font-semibold theme-primary-dark-text"><i class="fab fa-youtube text-red-500 mr-1"></i>YouTube</span>
+            <button onclick="toggleYoutubeVisibility()" class="text-[10px] theme-muted-text hover:underline cursor-pointer">Minimizar</button>
+        </div>
+        <div id="youtube-iframe-wrapper" class="w-56 h-32 rounded-xl overflow-hidden bg-black"></div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL DE LA TARJETA -->
+    <main class="relative z-10 max-w-4xl mx-auto px-4 py-8 md:py-12 flex flex-col gap-8 md:gap-12">
+
+        <!-- 1. ENCABEZADO ROMÁNTICO -->
+        <section class="text-center pt-2">
+            <div class="inline-flex items-center gap-2 mb-3 px-4 py-1.5 rounded-full bg-white/75 backdrop-blur border theme-border text-xs uppercase tracking-widest theme-primary-dark-text font-semibold shadow-sm">
+                <i class="fas fa-sparkles theme-primary-text"></i> Nuestra Historia <i class="fas fa-heart theme-primary-text"></i>
+            </div>
+            <h1 id="display-names" class="theme-title text-5xl sm:text-7xl md:text-8xl font-bold leading-tight drop-shadow-sm mb-2">
+                Carlos & Sofía
+            </h1>
+            <p id="display-subtitle" class="theme-hand text-2xl sm:text-3xl theme-primary-text">
+                "Cada momento contigo es mi recuerdo favorito"
+            </p>
+        </section>
+
+        <!-- 2. CONTADOR DETALLADO DE RELACIÓN -->
+        <section class="glass-card rounded-3xl p-6 md:p-8 text-center relative overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                <h2 class="text-xs uppercase tracking-widest font-bold theme-primary-dark-text mx-auto sm:mx-0">
+                    <i class="fas fa-clock theme-primary-text mr-1.5"></i>Nuestro Tiempo Juntos
+                </h2>
+                <!-- Selector rápido de fecha/hora en modo edición -->
+                <div class="flex items-center gap-2 mx-auto sm:mx-0 edit-only">
+                    <input type="datetime-local" id="quick-date-input" onchange="updateStartDate(this.value)" class="text-xs bg-white/90 border theme-border rounded-xl px-2.5 py-1.5 focus:outline-none">
+                </div>
+            </div>
+
+            <!-- Gran Contador Principal de Días Totales -->
+            <div class="mb-5 bg-white/80 rounded-2xl p-4 border theme-border shadow-sm inline-block px-8">
+                <span id="total-days-exact" class="text-4xl sm:text-6xl font-extrabold theme-primary-dark-text tracking-tight">0</span>
+                <span class="block text-xs uppercase tracking-widest font-semibold theme-primary-text mt-1">Días Juntos en Total ❤️</span>
+            </div>
+
+            <!-- Desglose: Años, Meses, Horas, Minutos, Segundos -->
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-2.5 sm:gap-3">
+                <div class="bg-white/75 rounded-2xl p-3 border theme-border">
+                    <span id="cnt-years" class="font-bold text-2xl sm:text-3xl theme-primary-dark-text">0</span>
+                    <span class="block text-[11px] uppercase theme-muted-text font-medium mt-0.5">Años</span>
+                </div>
+                <div class="bg-white/75 rounded-2xl p-3 border theme-border">
+                    <span id="cnt-months" class="font-bold text-2xl sm:text-3xl theme-primary-dark-text">0</span>
+                    <span class="block text-[11px] uppercase theme-muted-text font-medium mt-0.5">Meses</span>
+                </div>
+                <div class="bg-white/75 rounded-2xl p-3 border theme-border">
+                    <span id="cnt-hours" class="font-bold text-2xl sm:text-3xl theme-primary-dark-text">00</span>
+                    <span class="block text-[11px] uppercase theme-muted-text font-medium mt-0.5">Horas</span>
+                </div>
+                <div class="bg-white/75 rounded-2xl p-3 border theme-border">
+                    <span id="cnt-minutes" class="font-bold text-2xl sm:text-3xl theme-primary-dark-text">00</span>
+                    <span class="block text-[11px] uppercase theme-muted-text font-medium mt-0.5">Minutos</span>
+                </div>
+                <div class="col-span-3 sm:col-span-1 bg-white/75 rounded-2xl p-3 border theme-border">
+                    <span id="cnt-seconds" class="font-bold text-2xl sm:text-3xl theme-primary-text">00</span>
+                    <span class="block text-[11px] uppercase theme-muted-text font-medium mt-0.5">Segundos</span>
+                </div>
+            </div>
+
+            <p id="display-start-date" class="text-xs theme-muted-text mt-4 italic">
+                Juntos desde el 14 de Febrero de 2023
+            </p>
+        </section>
+
+        <!-- 3. CARRUSEL DE FOTOS AVANZADO (MÁXIMO 25 FOTOS + 3 ANIMACIONES) -->
+        <section class="glass-card rounded-3xl p-5 md:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div>
+                    <h2 class="theme-hand text-3xl md:text-4xl font-bold theme-primary-dark-text">Nuestros Recuerdos</h2>
+                    <p class="text-xs theme-muted-text">Desliza para recorrer nuestra historia (<span id="photo-counter-badge" class="font-bold theme-primary-text">4/25 fotos</span>)</p>
+                </div>
+
+                <!-- Controles de Edición del Carrusel -->
+                <div class="flex flex-wrap items-center gap-2 edit-only">
+                    <!-- Selector de 3 Animaciones -->
+                    <select id="carousel-anim-select" onchange="changeCarouselAnimation(this.value)" class="text-xs bg-white/90 border theme-border rounded-xl px-2.5 py-2 font-medium focus:outline-none cursor-pointer" title="Animación de transición">
+                        <option value="anim-fade">✨ Animación: Desvanecimiento</option>
+                        <option value="anim-slide3d">🎴 Animación: Deslizamiento 3D</option>
+                        <option value="anim-zoom">🔍 Animación: Zoom Romántico</option>
+                    </select>
+
+                    <!-- Subir Fotos (Hasta 25) -->
+                    <button onclick="document.getElementById('multi-photo-input').click()" class="text-xs theme-bg-primary text-white px-3.5 py-2 rounded-xl shadow hover:opacity-95 transition flex items-center gap-1.5 cursor-pointer font-semibold">
+                        <i class="fas fa-plus"></i> Agregar Fotos
+                    </button>
+                    <input type="file" id="multi-photo-input" accept="image/*" multiple class="hidden" onchange="handleMultiPhotoUpload(event)">
+                </div>
+            </div>
+
+            <!-- Visor Principal del Carrusel (con soporte táctil Swipe) -->
+            <div id="carousel-viewport" class="relative w-full h-[340px] sm:h-[440px] md:h-[500px] rounded-2xl overflow-hidden shadow-lg bg-slate-900 anim-fade touch-pan-y">
+                <div id="slides-container" class="w-full h-full relative"></div>
+
+                <!-- Botones Anterior / Siguiente -->
+                <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow-md backdrop-blur z-20 transition cursor-pointer">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-slate-800 flex items-center justify-center shadow-md backdrop-blur z-20 transition cursor-pointer">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <!-- Botón Autoplay -->
+                <button onclick="toggleAutoplay()" id="autoplay-btn" class="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-black/50 hover:bg-black/70 text-white text-[11px] backdrop-blur z-20 flex items-center gap-1.5 cursor-pointer">
+                    <i id="autoplay-icon" class="fas fa-pause"></i>
+                    <span id="autoplay-text">Auto</span>
+                </button>
+
+                <!-- Puntos Indicadores -->
+                <div id="dots-container" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-1.5 z-20 max-w-[85%]"></div>
+            </div>
+
+            <!-- Miniaturas para Reordenar o Eliminar (Solo en modo edición) -->
+            <div id="photo-manager-bar" class="mt-4 pt-4 border-t theme-border edit-only">
+                <p class="text-[11px] theme-muted-text mb-2 font-medium">Organiza tus fotos (usa las flechas para reordenar o la X para quitar):</p>
+                <div id="thumbnails-strip" class="flex gap-2.5 overflow-x-auto pb-2"></div>
+            </div>
+        </section>
+
+        <!-- 4. CARTA / MENSAJE DE AMOR -->
+        <section class="glass-card rounded-3xl p-6 md:p-10 text-center relative">
+            <i class="fas fa-quote-left text-3xl theme-primary-text opacity-40 mb-2"></i>
+            <h2 class="theme-hand text-4xl font-bold theme-primary-dark-text mb-4">Carta para Ti</h2>
+
+            <p id="display-letter" class="theme-hand text-2xl sm:text-3xl leading-relaxed max-w-2xl mx-auto whitespace-pre-line">
+                Gracias por llegar a mi vida y llenarla de luz, risas y momentos inolvidables. Eres mi persona favorita y cada día a tu lado es el mejor regalo. ¡Te amo muchísimo!
+            </p>
+
+            <div class="mt-8 pt-5 border-t theme-border flex flex-wrap items-center justify-between gap-3 text-xs">
+                <span class="italic theme-muted-text">Para siempre tuyo/a ❤️</span>
+                <button onclick="openConfigModal()" class="theme-bg-primary text-white px-4 py-2 rounded-xl font-semibold shadow hover:opacity-95 transition flex items-center gap-2 cursor-pointer edit-only">
+                    <i class="fas fa-sliders-h"></i> Editar Textos, Música y Tema
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. GENERADOR DE CÓDIGO QR ÚNICO -->
+        <section class="theme-bg-dark text-white rounded-3xl p-6 md:p-8 text-center shadow-xl relative overflow-hidden">
+            <h2 class="theme-hand text-4xl mb-2 text-white">Comparte esta Tarjeta Única</h2>
+            <p class="text-xs text-white/80 max-w-lg mx-auto mb-6">
+                Genera un enlace y código QR único con tus nombres, fecha, dedicatoria, tema pastel y canción de YouTube para que tu pareja lo abra al instante desde su celular.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-3">
+                <button onclick="generateUniqueQR()" class="bg-white text-slate-900 hover:bg-rose-50 font-bold text-sm px-6 py-3 rounded-full shadow-lg transition transform hover:scale-105 active:scale-95 inline-flex items-center gap-2 cursor-pointer">
+                    <i class="fas fa-qrcode theme-primary-text text-lg"></i>
+                    Compartir / Generar QR Único
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BOTÓN FLOTANTE DISCRETO PARA SALIR DEL MODO REGALO -->
+    <button id="exit-gift-btn" onclick="toggleGiftMode()" class="hidden fixed bottom-4 left-4 z-50 bg-white/90 hover:bg-white text-slate-800 border theme-border px-3.5 py-2 rounded-full shadow-lg text-xs font-semibold flex items-center gap-1.5 backdrop-blur cursor-pointer">
+        <i class="fas fa-pen theme-primary-text"></i> Volver a Editar
+    </button>
+
+    <!-- MODAL DE CONFIGURACIÓN INTEGRAL (Textos, Temas, Música) -->
+    <div id="config-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl border theme-border text-slate-800">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+                <h3 class="font-bold text-lg theme-primary-dark-text"><i class="fas fa-heart theme-primary-text mr-2"></i>Personalizar Tarjeta</h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600 text-xl cursor-pointer"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="space-y-4 text-left">
+                <!-- Nombres y Subtítulo -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nombres de la Pareja</label>
+                        <input type="text" id="cfg-names" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Fecha y Hora de Inicio</label>
+                        <input type="datetime-local" id="cfg-date" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Frase Corta / Subtítulo</label>
+                    <input type="text" id="cfg-subtitle" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Carta / Dedicatoria Romántica</label>
+                    <textarea id="cfg-letter" rows="4" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400"></textarea>
+                </div>
+
+                <!-- Selector Visual de 3 Temas Pasteles -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Tema Pastel</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="selectModalTheme('rosa')" id="theme-card-rosa" class="p-2.5 rounded-2xl border-2 text-center transition cursor-pointer bg-[#fff5f7]">
+                            <div class="w-6 h-6 rounded-full bg-[#f4978e] mx-auto mb-1"></div>
+                            <span class="block text-[11px] font-bold text-[#9d3350]">Rosa Algodón</span>
+                        </button>
+                        <button type="button" onclick="selectModalTheme('lavanda')" id="theme-card-lavanda" class="p-2.5 rounded-2xl border-2 text-center transition cursor-pointer bg-[#f8f5ff]">
+                            <div class="w-6 h-6 rounded-full bg-[#c084fc] mx-auto mb-1"></div>
+                            <span class="block text-[11px] font-bold text-[#5b21b6]">Lavanda Soñadora</span>
+                        </button>
+                        <button type="button" onclick="selectModalTheme('menta')" id="theme-card-menta" class="p-2.5 rounded-2xl border-2 text-center transition cursor-pointer bg-[#f2fbf8]">
+                            <div class="w-6 h-6 rounded-full bg-[#2a9d8f] mx-auto mb-1"></div>
+                            <span class="block text-[11px] font-bold text-[#1d6b61]">Menta & Cielo</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Configuración de Música Opcional -->
+                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                    <label class="block text-xs font-bold text-slate-700 mb-2"><i class="fas fa-music mr-1 text-pink-500"></i>Música de Fondo</label>
+                    <div class="grid grid-cols-3 gap-1.5 mb-3">
+                        <button type="button" onclick="setMusicTab('none')" id="tab-music-none" class="py-1.5 px-2 rounded-xl text-xs font-semibold border transition cursor-pointer">Sin Música</button>
+                        <button type="button" onclick="setMusicTab('youtube')" id="tab-music-youtube" class="py-1.5 px-2 rounded-xl text-xs font-semibold border transition cursor-pointer">YouTube</button>
+                        <button type="button" onclick="setMusicTab('local')" id="tab-music-local" class="py-1.5 px-2 rounded-xl text-xs font-semibold border transition cursor-pointer">Archivo Audio</button>
+                    </div>
+
+                    <!-- Panel Sin Música -->
+                    <div id="panel-music-none" class="text-xs text-slate-500 hidden">
+                        La tarjeta se abrirá en silencio sin reproductor de música.
+                    </div>
+
+                    <!-- Panel YouTube -->
+                    <div id="panel-music-youtube" class="space-y-2 hidden">
+                        <input type="url" id="cfg-yt-url" placeholder="Pega el enlace de YouTube (ej. https://youtu.be/...)" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none">
+                        <p class="text-[11px] text-slate-500">El enlace de YouTube viaja dentro del código QR para que suene en cualquier dispositivo.</p>
+                    </div>
+
+                    <!-- Panel Archivo Local -->
+                    <div id="panel-music-local" class="space-y-2 hidden">
+                        <input type="file" id="cfg-audio-file" accept="audio/*" onchange="handleLocalAudioUpload(event)" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-100 file:text-pink-700 hover:file:bg-pink-200 cursor-pointer">
+                        <p id="local-audio-name" class="text-[11px] text-slate-500 italic">Archivo actual: Melodía predeterminada</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-2">
+                <button onclick="closeConfigModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer">Cancelar</button>
+                <button onclick="applyConfigChanges()" class="px-5 py-2 text-xs font-bold theme-bg-primary text-white rounded-xl shadow hover:opacity-95 cursor-pointer">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CÓDIGO QR ÚNICO -->
+    <div id="qr-modal" class="fixed inset-0 z-50 bg-slate-900/65 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border theme-border text-slate-800 max-h-[92vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-lg theme-primary-dark-text">Tu Código QR Único</h3>
+                <button onclick="closeQRModal()" class="text-slate-400 hover:text-slate-600 text-xl cursor-pointer"><i class="fas fa-times"></i></button>
+            </div>
+
+            <p class="text-xs text-slate-600 mb-3">
+                Este código QR contiene codificados tus <strong>nombres, fecha, carta, tema pastel, animación y canción de YouTube</strong>.
+            </p>
+
+            <!-- Contenedor QR -->
+            <div class="flex justify-center my-3">
+                <div id="qrcode-box" class="p-3.5 bg-white rounded-2xl shadow-md border-2 theme-border"></div>
+            </div>
+
+            <!-- Nota informativa clara sobre fotos/MP3 locales y hosting gratuito -->
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-left text-[11px] text-amber-900 mb-4 space-y-1">
+                <p class="font-bold"><i class="fas fa-info-circle mr-1"></i> Nota importante sobre fotos y audios locales:</p>
+                <p>Las fotos subidas desde tu galería o archivos MP3 locales pesados se guardan en este navegador (LocalStorage) porque son demasiado grandes para caber dentro de un código QR.</p>
+                <p><strong>Consejo gratuito:</strong> Si deseas que tus fotos personales y MP3 se vean desde cualquier teléfono al escanear el QR, guarda este archivo HTML junto a tus fotos en una carpeta y súbela gratis arrastrándola a <strong>Netlify Drop</strong> o <strong>GitHub Pages</strong>.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2">
+                <button onclick="downloadQRPng()" class="flex-1 py-2.5 theme-bg-primary text-white text-xs font-bold rounded-xl shadow hover:opacity-95 transition cursor-pointer">
+                    <i class="fas fa-download mr-1.5"></i> Descargar QR (PNG)
+                </button>
+                <button onclick="copyUniqueLink()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition cursor-pointer">
+                    <i class="fas fa-link mr-1.5"></i> Copiar Enlace Único
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISOR DE IMAGEN A PANTALLA COMPLETA -->
+    <div id="lightbox" onclick="this.classList.add('hidden')" class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4 cursor-zoom-out">
+        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl object-contain" alt="Foto ampliada">
+    </div>
+
+    <!-- TOAST DE NOTIFICACIÓN -->
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-full shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 flex items-center gap-2">
+        <i class="fas fa-heart text-pink-400"></i>
+        <span id="toast-msg">Listo</span>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        const MAX_PHOTOS = 25;
+
+        // Estado predeterminado de la tarjeta
+        let state = {
+            names: "Carlos & Sofía",
+            subtitle: '"Cada momento contigo es mi recuerdo favorito"',
+            startDate: "2023-02-14T18:00",
+            letter: "Gracias por llegar a mi vida y llenarla de luz, risas y momentos inolvidables. Eres mi persona favorita y cada día a tu lado es el mejor regalo. ¡Te amo muchísimo!",
+            theme: "rosa",
+            animation: "anim-fade",
+            musicMode: "local", // 'none' | 'youtube' | 'local'
+            youtubeUrl: "",
+            localAudioUrl: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112185.mp3",
+            localAudioName: "Melodía Romántica de Piano",
+            photos: [
+                { url: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=1000&q=80", caption: "Nuestra primera cita" },
+                { url: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1000&q=80", caption: "Aventuras juntos" },
+                { url: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1000&q=80", caption: "Atardeceres contigo" },
+                { url: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1000&q=80", caption: "Siempre de la mano" }
+            ]
+        };
+
+        let currentSlide = 0;
+        let prevSlideIndex = -1;
+        let autoplayTimer = null;
+        let isAutoplay = true;
+        let isPlaying = false;
+        let isMuted = false;
+        let tempModalTheme = "rosa";
+        let tempMusicMode = "local";
+
+        // Inicialización al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStateFromStorageAndUrl();
+            applyStateToUI();
+            startFloatingHearts();
+            setupClickHearts();
+            startRelationshipCounter();
+            setupSwipeGestures();
+            startAutoplay();
+        });
+
+        // 1. CODIFICACIÓN Y DECODIFICACIÓN EN URL (Para QR Único)
+        function encodeConfigToUrl() {
+            const sharePayload = {
+                n: state.names,
+                s: state.subtitle,
+                d: state.startDate,
+                l: state.letter,
+                t: state.theme,
+                a: state.animation,
+                m: state.musicMode,
+                y: state.youtubeUrl
+            };
+            const jsonStr = JSON.stringify(sharePayload);
+            const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
+            const baseUrl = window.location.href.split('#')[0].split('?')[0];
+            return `${baseUrl}#card=${base64}`;
+        }
+
+        function loadStateFromStorageAndUrl() {
+            // Primero cargar de LocalStorage si existe
+            try {
+                const saved = localStorage.getItem('romantic_card_v2');
+                if (saved) {
+                    state = { ...state, ...JSON.parse(saved) };
+                }
+            } catch (e) { console.warn("No se pudo leer LocalStorage", e); }
+
+            // Si viene con parámetros en la URL (#card=...), tienen prioridad y activan modo regalo
+            const hash = window.location.hash;
+            if (hash && hash.includes('card=')) {
+                try {
+                    const encoded = hash.split('card=')[1].split('&')[0];
+                    const decodedJson = decodeURIComponent(escape(atob(encoded)));
+                    const data = JSON.parse(decodedJson);
+                    if (data.n) state.names = data.n;
+                    if (data.s) state.subtitle = data.s;
+                    if (data.d) state.startDate = data.d;
+                    if (data.l) state.letter = data.l;
+                    if (data.t) state.theme = data.t;
+                    if (data.a) state.animation = data.a;
+                    if (data.m) state.musicMode = data.m;
+                    if (data.y !== undefined) state.youtubeUrl = data.y;
+
+                    // Activar automáticamente Modo Regalo si se abre desde enlace compartido
+                    document.body.classList.add('gift-mode');
+                    document.getElementById('exit-gift-btn').classList.remove('hidden');
+                } catch (err) {
+                    console.error("Error decodificando enlace compartido", err);
+                }
+            }
+        }
+
+        function saveStateToStorage() {
+            try {
+                localStorage.setItem('romantic_card_v2', JSON.stringify(state));
+            } catch (e) {
+                showToast("Aviso: Límite de almacenamiento del navegador alcanzado para fotos muy pesadas.");
+            }
+        }
+
+        // Aplicar todo el estado a la interfaz
+        function applyStateToUI() {
+            document.body.setAttribute('data-theme', state.theme);
+            document.getElementById('display-names').innerText = state.names;
+            document.getElementById('envelope-names').innerText = state.names;
+            document.getElementById('display-subtitle').innerText = state.subtitle;
+            document.getElementById('display-letter').innerText = state.letter;
+            document.getElementById('quick-date-input').value = state.startDate;
+            document.getElementById('carousel-anim-select').value = state.animation;
+
+            // Formatear fecha legible
+            const dt = new Date(state.startDate);
+            if (!isNaN(dt)) {
+                const formatted = dt.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('display-start-date').innerText = `Juntos desde el ${formatted}`;
+            }
+
+            // Aplicar animación al carrusel
+            const viewport = document.getElementById('carousel-viewport');
+            viewport.classList.remove('anim-fade', 'anim-slide3d', 'anim-zoom');
+            viewport.classList.add(state.animation);
+
+            renderCarousel();
+            configureAudioEngine();
+        }
+
+        // 2. SOBRE INTERACTIVO E INTERACTIVIDAD DE PARTÍCULAS
+        function openSurprise() {
+            const box = document.getElementById('envelope-box');
+            const overlay = document.getElementById('envelope-overlay');
+            box.classList.add('envelope-open');
+
+            // Explosión de corazones al abrir
+            for (let i = 0; i < 18; i++) {
+                setTimeout(() => {
+                    spawnClickHeart(window.innerWidth / 2 + (Math.random() * 140 - 70), window.innerHeight / 2);
+                }, i * 40);
+            }
+
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.classList.add('hidden'), 700);
+                // Iniciar música automáticamente si está configurada
+                if (state.musicMode !== 'none' && !isPlaying) {
+                    toggleMusicPlay(true);
+                }
+            }, 650);
+        }
+
+        function startFloatingHearts() {
+            const container = document.getElementById('hearts-container');
+            setInterval(() => {
+                const el = document.createElement('i');
+                el.className = 'fas fa-heart heart-particle theme-primary-text';
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 16 + 10) + 'px';
+                el.style.animationDuration = (Math.random() * 4 + 5) + 's';
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 9000);
+            }, 650);
+        }
+
+        function setupClickHearts() {
+            document.addEventListener('click', (e) => {
+                // Evitar saturar si hace clic en inputs
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+                for (let i = 0; i < 4; i++) {
+                    spawnClickHeart(e.clientX, e.clientY);
+                }
+            });
+        }
+
+        function spawnClickHeart(x, y) {
+            const heart = document.createElement('i');
+            heart.className = 'fas fa-heart click-heart theme-primary-text';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            heart.style.fontSize = (Math.random() * 12 + 12) + 'px';
+            const tx = (Math.random() * 120 - 60) + 'px';
+            const ty = (Math.random() * -110 - 30) + 'px';
+            const rot = (Math.random() * 90 - 45) + 'deg';
+            heart.style.setProperty('--tx', tx);
+            heart.style.setProperty('--ty', ty);
+            heart.style.setProperty('--rot', rot);
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1100);
+        }
+
+        // 3. CONTADOR DE RELACIÓN EN TIEMPO REAL
+        function updateStartDate(val) {
+            if (!val) return;
+            state.startDate = val;
+            saveStateToStorage();
+            applyStateToUI();
+        }
+
+        function startRelationshipCounter() {
+            function tick() {
+                const start = new Date(state.startDate);
+                const now = new Date();
+                let diffMs = now - start;
+                if (isNaN(diffMs) || diffMs < 0) diffMs = 0;
+
+                const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                const years = Math.floor(totalDays / 365.25);
+                const months = Math.floor((totalDays % 365.25) / 30.44);
+                const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+                document.getElementById('total-days-exact').innerText = totalDays.toLocaleString('es-ES');
+                document.getElementById('cnt-years').innerText = years;
+                document.getElementById('cnt-months').innerText = months;
+                document.getElementById('cnt-hours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('cnt-minutes').innerText = String(minutes).padStart(2, '0');
+                document.getElementById('cnt-seconds').innerText = String(seconds).padStart(2, '0');
+            }
+            tick();
+            setInterval(tick, 1000);
+        }
+
+        // 4. CARRUSEL AVANZADO (MÁXIMO 25 FOTOS, SWIPE, REORDENAR Y 3 ANIMACIONES)
+        function renderCarousel() {
+            const container = document.getElementById('slides-container');
+            const dots = document.getElementById('dots-container');
+            const thumbs = document.getElementById('thumbnails-strip');
+            const badge = document.getElementById('photo-counter-badge');
+
+            badge.innerText = `${state.photos.length}/${MAX_PHOTOS} fotos`;
+            container.innerHTML = '';
+            dots.innerHTML = '';
+            thumbs.innerHTML = '';
+
+            if (currentSlide >= state.photos.length) currentSlide = 0;
+
+            state.photos.forEach((photo, index) => {
+                // Slide
+                const slide = document.createElement('div');
+                let statusClass = '';
+                if (index === currentSlide) statusClass = 'active';
+                else if (index === prevSlideIndex) statusClass = 'prev';
+
+                slide.className = `slide-item ${statusClass} cursor-zoom-in`;
+                slide.onclick = () => {
+                    document.getElementById('lightbox-img').src = photo.url;
+                    document.getElementById('lightbox').classList.remove('hidden');
+                };
+                slide.innerHTML = `
+                    <img src="${photo.url}" alt="Recuerdo ${index + 1}" class="w-full h-full object-cover">
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent p-5 text-left">
+                        <span class="text-white text-xs sm:text-sm font-medium drop-shadow">${photo.caption || `Recuerdo #${index + 1}`}</span>
+                    </div>
+                `;
+                container.appendChild(slide);
+
+                // Punto indicador
+                const dot = document.createElement('button');
+                dot.className = `h-2 rounded-full transition-all cursor-pointer ${index === currentSlide ? 'w-6 bg-white' : 'w-2 bg-white/50'}`;
+                dot.onclick = (e) => { e.stopPropagation(); goToSlide(index); };
+                dots.appendChild(dot);
+
+                // Miniatura de gestión (reordenar y eliminar)
+                const thumbCard = document.createElement('div');
+                thumbCard.className = `relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 ${index === currentSlide ? 'border-pink-500 scale-105' : 'border-transparent'} transition`;
+                thumbCard.innerHTML = `
+                    <img src="${photo.url}" onclick="goToSlide(${index})" class="w-full h-full object-cover cursor-pointer">
+                    <button onclick="removePhoto(${index})" class="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center shadow cursor-pointer" title="Eliminar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="absolute bottom-0 inset-x-0 bg-black/60 flex justify-around py-0.5 text-white text-[10px]">
+                        <button onclick="movePhoto(${index}, -1)" class="hover:text-pink-300 px-1 cursor-pointer" title="Mover izquierda"><i class="fas fa-arrow-left"></i></button>
+                        <button onclick="movePhoto(${index}, 1)" class="hover:text-pink-300 px-1 cursor-pointer" title="Mover derecha"><i class="fas fa-arrow-right"></i></button>
+                    </div>
+                `;
+                thumbs.appendChild(thumbCard);
+            });
+        }
+
+        function goToSlide(idx) {
+            prevSlideIndex = currentSlide;
+            currentSlide = (idx + state.photos.length) % state.photos.length;
+            renderCarousel();
+        }
+
+        function nextSlide() { goToSlide(currentSlide + 1); }
+        function prevSlide() { goToSlide(currentSlide - 1); }
+
+        function changeCarouselAnimation(animClass) {
+            state.animation = animClass;
+            const viewport = document.getElementById('carousel-viewport');
+            viewport.classList.remove('anim-fade', 'anim-slide3d', 'anim-zoom');
+            viewport.classList.add(animClass);
+            saveStateToStorage();
+        }
+
+        function toggleAutoplay() {
+            isAutoplay = !isAutoplay;
+            const icon = document.getElementById('autoplay-icon');
+            icon.className = isAutoplay ? 'fas fa-pause' : 'fas fa-play';
+            if (isAutoplay) startAutoplay();
+            else clearInterval(autoplayTimer);
+        }
+
+        function startAutoplay() {
+            clearInterval(autoplayTimer);
+            autoplayTimer = setInterval(() => {
+                if (isAutoplay && state.photos.length > 1) nextSlide();
+            }, 4500);
+        }
+
+        // Gestos táctiles (Swipe en móvil/tablet)
+        function setupSwipeGestures() {
+            const el = document.getElementById('carousel-viewport');
+            let touchStartX = 0;
+            el.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+            el.addEventListener('touchend', (e) => {
+                const diff = e.changedTouches[0].screenX - touchStartX;
+                if (Math.abs(diff) > 40) {
+                    if (diff < 0) nextSlide();
+                    else prevSlide();
+                }
+            }, { passive: true });
+        }
+
+        // Subida de hasta 25 fotos con compresión ligera automática
+        function handleMultiPhotoUpload(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
+
+            const remainingSlots = MAX_PHOTOS - state.photos.length;
+            if (remainingSlots <= 0) {
+                showToast("Ya alcanzaste el máximo de 25 fotos.");
+                return;
+            }
+
+            const filesToProcess = files.slice(0, remainingSlots);
+            if (files.length > remainingSlots) {
+                showToast(`Solo se agregaron ${remainingSlots} fotos para no superar el máximo de 25.`);
+            }
+
+            filesToProcess.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Redimensionar suavemente para optimizar memoria
+                        const canvas = document.createElement('canvas');
+                        const maxDim = 1000;
+                        let w = img.width, h = img.height;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                            else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        const compressedUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+                        state.photos.push({
+                            url: compressedUrl,
+                            caption: `Momento especial #${state.photos.length + 1}`
+                        });
+                        renderCarousel();
+                        saveStateToStorage();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+            event.target.value = '';
+        }
+
+        function removePhoto(index) {
+            if (state.photos.length <= 1) {
+                showToast("Debe quedar al menos 1 foto en el carrusel.");
+                return;
+            }
+            state.photos.splice(index, 1);
+            renderCarousel();
+            saveStateToStorage();
+        }
+
+        function movePhoto(index, dir) {
+            const target = index + dir;
+            if (target < 0 || target >= state.photos.length) return;
+            const temp = state.photos[index];
+            state.photos[index] = state.photos[target];
+            state.photos[target] = temp;
+            currentSlide = target;
+            renderCarousel();
+            saveStateToStorage();
+        }
+
+        // 5. MÚSICA OPCIONAL (SIN MÚSICA, YOUTUBE O ARCHIVO LOCAL)
+        function extractYoutubeId(url) {
+            if (!url) return null;
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regExp);
+            return match ? match[1] : null;
+        }
+
+        function configureAudioEngine() {
+            const pill = document.getElementById('music-pill');
+            const localAudio = document.getElementById('local-audio-player');
+            const ytContainer = document.getElementById('youtube-mini-container');
+            const ytWrapper = document.getElementById('youtube-iframe-wrapper');
+            const label = document.getElementById('music-status-label');
+            const progress = document.getElementById('music-progress');
+
+            localAudio.pause();
+            ytWrapper.innerHTML = '';
+            ytContainer.classList.add('hidden');
+
+            if (state.musicMode === 'none') {
+                pill.classList.add('hidden');
+                isPlaying = false;
+                return;
+            }
+
+            pill.classList.remove('hidden');
+
+            if (state.musicMode === 'local') {
+                localAudio.src = state.localAudioUrl;
+                label.innerText = state.localAudioName || "Canción Local";
+                progress.classList.remove('hidden');
+
+                localAudio.ontimeupdate = () => {
+                    if (localAudio.duration) {
+                        progress.value = (localAudio.currentTime / localAudio.duration) * 100;
+                    }
+                };
+            } else if (state.musicMode === 'youtube') {
+                const videoId = extractYoutubeId(state.youtubeUrl);
+                label.innerText = videoId ? "Canción de YouTube" : "Enlace YouTube inválido";
+                progress.classList.add('hidden');
+                if (videoId) {
+                    ytContainer.classList.remove('hidden');
+                    ytWrapper.innerHTML = `<iframe id="yt-player-frame" width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&loop=1&playlist=${videoId}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                }
+            }
+        }
+
+        function toggleMusicPlay(forcePlay = false) {
+            const icon = document.getElementById('music-play-icon');
+            const localAudio = document.getElementById('local-audio-player');
+
+            if (state.musicMode === 'local') {
+                if (!isPlaying || forcePlay) {
+                    localAudio.play().then(() => {
+                        isPlaying = true;
+                        icon.className = 'fas fa-pause';
+                    }).catch(() => showToast("Toca el botón de Play para escuchar la canción"));
+                } else {
+                    localAudio.pause();
+                    isPlaying = false;
+                    icon.className = 'fas fa-play';
+                }
+            } else if (state.musicMode === 'youtube') {
+                const frame = document.getElementById('yt-player-frame');
+                if (!frame) return;
+                if (!isPlaying || forcePlay) {
+                    frame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                    isPlaying = true;
+                    icon.className = 'fas fa-pause';
+                } else {
+                    frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                    isPlaying = false;
+                    icon.className = 'fas fa-play';
+                }
+            }
+        }
+
+        function seekAudio(val) {
+            const localAudio = document.getElementById('local-audio-player');
+            if (state.musicMode === 'local' && localAudio.duration) {
+                localAudio.currentTime = (val / 100) * localAudio.duration;
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const localAudio = document.getElementById('local-audio-player');
+            const icon = document.getElementById('volume-icon');
+            localAudio.muted = isMuted;
+            icon.className = isMuted ? 'fas fa-volume-mute text-red-500' : 'fas fa-volume-up';
+
+            const frame = document.getElementById('yt-player-frame');
+            if (frame) {
+                const cmd = isMuted ? 'mute' : 'unMute';
+                frame.contentWindow.postMessage(`{"event":"command","func":"${cmd}","args":""}`, '*');
+            }
+        }
+
+        function toggleYoutubeVisibility() {
+            const wrap = document.getElementById('youtube-iframe-wrapper');
+            wrap.classList.toggle('hidden');
+        }
+
+        function handleLocalAudioUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                state.localAudioUrl = e.target.result;
+                state.localAudioName = file.name;
+                document.getElementById('local-audio-name').innerText = `Cargado: ${file.name}`;
+                showToast("Canción cargada correctamente");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 6. TEMAS PASTELES Y MODAL DE EDICIÓN
+        function setTheme(themeName) {
+            state.theme = themeName;
+            document.body.setAttribute('data-theme', themeName);
+            saveStateToStorage();
+        }
+
+        function toggleGiftMode() {
+            document.body.classList.toggle('gift-mode');
+            const isGift = document.body.classList.contains('gift-mode');
+            const exitBtn = document.getElementById('exit-gift-btn');
+            if (isGift) {
+                exitBtn.classList.remove('hidden');
+                showToast("Modo Regalo activado: así verá la tarjeta tu pareja");
+            } else {
+                exitBtn.classList.add('hidden');
+            }
+        }
+
+        function openConfigModal() {
+            document.getElementById('cfg-names').value = state.names;
+            document.getElementById('cfg-date').value = state.startDate;
+            document.getElementById('cfg-subtitle').value = state.subtitle;
+            document.getElementById('cfg-letter').value = state.letter;
+            document.getElementById('cfg-yt-url').value = state.youtubeUrl;
+            document.getElementById('local-audio-name').innerText = `Actual: ${state.localAudioName}`;
+
+            selectModalTheme(state.theme);
+            setMusicTab(state.musicMode);
+            document.getElementById('config-modal').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('config-modal').classList.add('hidden');
+        }
+
+        function selectModalTheme(t) {
+            tempModalTheme = t;
+            ['rosa', 'lavanda', 'menta'].forEach(id => {
+                const el = document.getElementById(`theme-card-${id}`);
+                el.style.borderColor = (id === t) ? '#ec4899' : '#e2e8f0';
+            });
+        }
+
+        function setMusicTab(mode) {
+            tempMusicMode = mode;
+            ['none', 'youtube', 'local'].forEach(m => {
+                const btn = document.getElementById(`tab-music-${m}`);
+                const panel = document.getElementById(`panel-music-${m}`);
+                if (m === mode) {
+                    btn.classList.add('bg-pink-500', 'text-white', 'border-pink-500');
+                    panel.classList.remove('hidden');
+                } else {
+                    btn.classList.remove('bg-pink-500', 'text-white', 'border-pink-500');
+                    panel.classList.add('hidden');
+                }
+            });
+        }
+
+        function applyConfigChanges() {
+            state.names = document.getElementById('cfg-names').value.trim() || state.names;
+            state.startDate = document.getElementById('cfg-date').value || state.startDate;
+            state.subtitle = document.getElementById('cfg-subtitle').value.trim();
+            state.letter = document.getElementById('cfg-letter').value;
+            state.theme = tempModalTheme;
+            state.musicMode = tempMusicMode;
+            state.youtubeUrl = document.getElementById('cfg-yt-url').value.trim();
+
+            isPlaying = false;
+            document.getElementById('music-play-icon').className = 'fas fa-play';
+
+            saveStateToStorage();
+            applyStateToUI();
+            closeConfigModal();
+            showToast("¡Tarjeta personalizada con éxito!");
+        }
+
+        // 7. GENERADOR DE CÓDIGO QR ÚNICO
+        function generateUniqueQR() {
+            const uniqueUrl = encodeConfigToUrl();
+            // Actualizar la barra de direcciones sin recargar para reflejar la tarjeta única
+            window.history.replaceState(null, '', uniqueUrl);
+
+            const box = document.getElementById('qrcode-box');
+            box.innerHTML = '';
+
+            new QRCode(box, {
+                text: uniqueUrl,
+                width: 190,
+                height: 190,
+                colorDark: "#2d1a24",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            document.getElementById('qr-modal').classList.remove('hidden');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qr-modal').classList.add('hidden');
+        }
+
+        function downloadQRPng() {
+            const canvas = document.querySelector('#qrcode-box canvas');
+            const img = document.querySelector('#qrcode-box img');
+            const url = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
+
+            if (url) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `QR-${state.names.replace(/\s+/g, '-')}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast("Código QR descargado en PNG");
+            }
+        }
+
+        function copyUniqueLink() {
+            const uniqueUrl = encodeConfigToUrl();
+            const input = document.createElement('input');
+            document.body.appendChild(input);
+            input.value = uniqueUrl;
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast("¡Enlace único copiado al portapapeles!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 3200);
+        }
+    </script>
+</body>
+</html>
